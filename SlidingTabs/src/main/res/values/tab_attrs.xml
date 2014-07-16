@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SlidingTabLayout">
+        <attr name="tabIndicatorThickness" format="dimension"/>
+        <attr name="tabIndicatorColor" format="reference|color" />
+        <attr name="tabBottomBorderHeight" format="dimension"/>
+    </declare-styleable>
+</resources>
