@@ -2,7 +2,7 @@
 <resources>
     <declare-styleable name="SlidingTabLayout">
         <attr name="tabIndicatorThickness" format="dimension"/>
-        <attr name="tabIndicatorColor" format="reference|color" />
+        <attr name="tabIndicatorDrawable" format="reference|color" />
         <attr name="tabBottomBorderHeight" format="dimension"/>
     </declare-styleable>
 </resources>

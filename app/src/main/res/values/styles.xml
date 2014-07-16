@@ -9,7 +9,7 @@
 
     <style name="SlidingTab.Main">
         <item name="tabIndicatorThickness">4dp</item>
-        <item name="tabIndicatorColor">#493334</item>
+        <item name="tabIndicatorDrawable">@drawable/underline_image</item>
         <item name="tabBottomBorderHeight">1dp</item>
     </style>
 

@@ -18,6 +18,7 @@ package com.jungkai.slidingtabs;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -115,8 +116,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
                     case R.styleable.SlidingTabLayout_tabIndicatorThickness:
                         setIndicatorThickness(a.getDimensionPixelSize(attr, (int) (SlidingTabStrip.DEFAULT_INDICATOR_THICKNESS_DIPS * density)));
                         break;
-                    case R.styleable.SlidingTabLayout_tabIndicatorColor:
-                        setIndicatorColor(a.getColor(attr, SlidingTabStrip.DEFAULT_SELECTED_INDICATOR_COLOR));
+                    case R.styleable.SlidingTabLayout_tabIndicatorDrawable:
+                        setIndicatorDrawable(a.getDrawable(attr));
                         break;
                     default:
                         break;
@@ -145,8 +146,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
         return this.stretchToParent;
     }
 
-    public void setIndicatorColor(int color) {
-        mTabStrip.setIndicatorColor(color);
+    public void setIndicatorDrawable(Drawable drawable) {
+        mTabStrip.setIndicatorDrawable(drawable);
     }
 
     public void setIndicatorThickness(int thickness) {

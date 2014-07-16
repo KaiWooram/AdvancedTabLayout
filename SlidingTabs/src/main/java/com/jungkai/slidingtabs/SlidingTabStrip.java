@@ -21,6 +21,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.NinePatchDrawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -39,20 +43,25 @@ class SlidingTabStrip extends LinearLayout {
     public static final float DEFAULT_DIVIDER_HEIGHT = 0.5f;
 
     private int mBottomBorderThickness;
+
     private final Paint mBottomBorderPaint;
 
     private int mSelectedIndicatorThickness;
-    private final Paint mSelectedIndicatorPaint;
+
+    private Paint mSelectedIndicatorPaint;
 
     private final int bottomBorderColor;
 
     private final Paint mDividerPaint;
+
     private final float mDividerHeight;
 
     private int mSelectedPosition;
+
     private float mSelectionOffset;
 
-    private int tabIndicatorColor = DEFAULT_SELECTED_INDICATOR_COLOR;
+    private Drawable tabIndicatorDrawable = new ColorDrawable(DEFAULT_SELECTED_INDICATOR_COLOR);
+
     private int tabDividerColor = setColorAlpha(DEFAULT_BOTTOM_BORDER_COLOR,
             DEFAULT_DIVIDER_COLOR_ALPHA);
 
@@ -77,7 +86,7 @@ class SlidingTabStrip extends LinearLayout {
         mBottomBorderPaint.setColor(bottomBorderColor);
 
         mSelectedIndicatorThickness = (int) (DEFAULT_INDICATOR_THICKNESS_DIPS * density);
-        mSelectedIndicatorPaint = new Paint();
+//        mSelectedIndicatorPaint = new Paint();
 
         mDividerHeight = DEFAULT_DIVIDER_HEIGHT;
         mDividerPaint = new Paint();
@@ -92,8 +101,8 @@ class SlidingTabStrip extends LinearLayout {
         mSelectedIndicatorThickness = thicknessInPixelSize;
     }
 
-    void setIndicatorColor(int color) {
-        tabIndicatorColor = color;
+    void setIndicatorDrawable(Drawable drawable) {
+        tabIndicatorDrawable = drawable;
         invalidate();
     }
 
@@ -119,7 +128,7 @@ class SlidingTabStrip extends LinearLayout {
             View selectedTitle = getChildAt(mSelectedPosition);
             int left = selectedTitle.getLeft();
             int right = selectedTitle.getRight();
-            int color = tabIndicatorColor;
+            Drawable drawable = tabIndicatorDrawable;
 
             if (mSelectionOffset > 0f && mSelectedPosition < (getChildCount() - 1)) {
 //                int nextColor = tabColorizer.getIndicatorColor(mSelectedPosition + 1);
@@ -134,11 +143,17 @@ class SlidingTabStrip extends LinearLayout {
                 right = (int) (mSelectionOffset * nextTitle.getRight() +
                         (1.0f - mSelectionOffset) * right);
             }
+            NinePatchDrawable ninePatchDrawable = null;
+            if (tabIndicatorDrawable instanceof NinePatchDrawable) {
+                ninePatchDrawable = (NinePatchDrawable)tabIndicatorDrawable;
+                mSelectedIndicatorPaint = ninePatchDrawable.getPaint();
+            }
 
-            mSelectedIndicatorPaint.setColor(color);
-
-            canvas.drawRect(left, height - mSelectedIndicatorThickness, right,
-                    height, mSelectedIndicatorPaint);
+            ninePatchDrawable.setBounds(left, height - mSelectedIndicatorThickness, right, height);
+            ninePatchDrawable.draw(canvas);
+//
+//            canvas.drawRect(left, height - mSelectedIndicatorThickness, right,
+//                    height, mSelectedIndicatorPaint);
         }
 
         // Thin underline along the entire bottom edge
