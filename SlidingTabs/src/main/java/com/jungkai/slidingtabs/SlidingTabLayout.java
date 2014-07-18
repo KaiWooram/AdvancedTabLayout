@@ -39,15 +39,15 @@ public class SlidingTabLayout extends HorizontalScrollView {
         int getImageResourceId(int position);
     }
 
+    public interface OnTabChangedListener {
+        void onTabChanged(int position);
+    }
+
+    private OnTabChangedListener tabChangedListener;
+
     private static final int TITLE_OFFSET_DIPS = 24;
 
-    private static final int TAB_VIEW_PADDING_DIPS = 16;
-
-    private static final int TAB_VIEW_TEXT_SIZE_SP = 12;
-
     private DisplayType displayType;
-
-    private int parentWidth = 0;
 
     private TextView tabTitleView;
 
@@ -119,6 +119,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
                     case R.styleable.SlidingTabLayout_tabIndicatorDrawable:
                         setIndicatorDrawable(a.getDrawable(attr));
                         break;
+                    case R.styleable.SlidingTabLayout_tabDividerThickness:
+                        setDividerThickness(a.getDimensionPixelSize(attr, (int) (SlidingTabStrip.DEFAULT_DIVIDER_THICKNESS_DIPS * density)));
+                        break;
                     default:
                         break;
                 }
@@ -140,6 +143,10 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
     public void setBottomBorderThickness(int bottomBorderThickness){
         this.mTabStrip.setBottomBorderThickness(bottomBorderThickness);
+    }
+
+    public void setDividerThickness(int bottomBorderThickness){
+        this.mTabStrip.setDividerThickness(bottomBorderThickness);
     }
 
     public boolean isStretchToParent() {
@@ -216,16 +223,6 @@ public class SlidingTabLayout extends HorizontalScrollView {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-    }
-
-    @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (mViewPager != null) {
@@ -263,9 +260,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
             mTabStrip.onViewPagerPageChanged(position, positionOffset);
 
-            View selectedTitle = mTabStrip.getChildAt(position);
-            int extraOffset = (selectedTitle != null)
-                    ? (int) (positionOffset * selectedTitle.getWidth())
+            View selectedTab = mTabStrip.getChildAt(position);
+            int extraOffset = (selectedTab != null)
+                    ? (int) (positionOffset * selectedTab.getWidth())
                     : 0;
             scrollToTab(position, extraOffset);
 
@@ -289,13 +286,26 @@ public class SlidingTabLayout extends HorizontalScrollView {
             if (mScrollState == ViewPager.SCROLL_STATE_IDLE) {
                 mTabStrip.onViewPagerPageChanged(position, 0f);
                 scrollToTab(position, 0);
+
+                for (int i = 0; i < mTabStrip.getChildCount(); i++) {
+
+                    View selectedTab = mTabStrip.getChildAt(position);
+                    if (position == i) {
+                        selectedTab.setSelected(true);
+                    } else {
+                        selectedTab.setSelected(false);
+                    }
+                }
             }
 
             if (mViewPagerPageChangeListener != null) {
                 mViewPagerPageChangeListener.onPageSelected(position);
             }
         }
+    }
 
+    public void setOnTabChangedListner(OnTabChangedListener listener) {
+        tabChangedListener = listener;
     }
 
     private class TabClickListener implements OnClickListener {
@@ -304,10 +314,14 @@ public class SlidingTabLayout extends HorizontalScrollView {
             for (int i = 0; i < mTabStrip.getChildCount(); i++) {
                 if (v == mTabStrip.getChildAt(i)) {
                     mViewPager.setCurrentItem(i);
+
+                    if (tabChangedListener != null) {
+                        tabChangedListener.onTabChanged(i);
+                    }
+
                     return;
                 }
             }
         }
     }
-
 }

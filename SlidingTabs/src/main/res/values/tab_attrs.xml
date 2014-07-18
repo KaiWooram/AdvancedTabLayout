@@ -4,5 +4,6 @@
         <attr name="tabIndicatorThickness" format="dimension"/>
         <attr name="tabIndicatorDrawable" format="reference|color" />
         <attr name="tabBottomBorderHeight" format="dimension"/>
+        <attr name="tabDividerThickness" format="dimension"/>
     </declare-styleable>
 </resources>
